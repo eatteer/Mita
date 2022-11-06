@@ -21,12 +21,6 @@ namespace Mita.Controllers
             _mitaContext = mitaContext;
         }
 
-        [HttpGet("me"), Authorize]
-        public ActionResult GetMe()
-        {
-            return Ok(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        }
-
         [HttpGet, Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<User>>> FindAll()
         {
