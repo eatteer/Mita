@@ -50,6 +50,11 @@ namespace Mita.Controllers
             Manga manga = new Manga();
             manga.Name = createMangaDTO.Name;
             manga.MalUri = createMangaDTO.MalUri;
+            manga.Status = createMangaDTO.Status;
+            manga.Chapters = createMangaDTO.Chapters;
+            manga.Volumes = createMangaDTO.Volumes;
+            manga.Synopsis = createMangaDTO.Synopsis;
+            manga.Score = createMangaDTO.Score;
 
             // Save manga in database
             await _mitaContext.Mangas.AddAsync(manga);
@@ -57,7 +62,7 @@ namespace Mita.Controllers
 
             if (entriesWritten == 0) Problem();
 
-            return Ok(manga);
+            return Created("/api/manga", manga);
         }
 
         [HttpPatch("{id}"), Authorize(Roles = "Admin")]
@@ -73,6 +78,11 @@ namespace Mita.Controllers
             // Update manga data
             manga.Name = updateMangaDTO.Name ?? manga.Name;
             manga.MalUri = updateMangaDTO.MalUri ?? manga.MalUri;
+            manga.Status = updateMangaDTO.Status ?? manga.Status;
+            manga.Chapters = updateMangaDTO.Chapters ?? manga.Chapters;
+            manga.Volumes = updateMangaDTO.Volumes ?? manga.Volumes;
+            manga.Synopsis = updateMangaDTO.Synopsis ?? manga.Synopsis;
+            manga.Score = updateMangaDTO.Score ?? manga.Score;
 
             // Save manga changes in database
             int entriesWritten = await _mitaContext.SaveChangesAsync();
@@ -87,7 +97,6 @@ namespace Mita.Controllers
         {
             // Check if manga exists
             Manga? manga = await _mitaContext.Mangas
-                .Include(manga => manga.Reviews)
                 .Where(manga => manga.Id == id)
                 .FirstOrDefaultAsync();
 

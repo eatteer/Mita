@@ -43,14 +43,14 @@ namespace Mita.Controllers
             // http://codeissue.com/issues/i24dd7c2da0e61c/problem-using-encoding-utf8-getstring-and-encoding-utf8-getbytes
             user.PasswordHash = Convert.ToBase64String(passwordHash);
             user.PasswordSalt = Convert.ToBase64String(passwordSalt);
-            user.Role = "Guest";
+            user.Role = "Reviewer";
 
             // Try saving user in database
             await _mitaContext.Users.AddAsync(user);
             int entriesWritten = await _mitaContext.SaveChangesAsync();
             if (entriesWritten == 0) Problem();
 
-            return Ok(user);
+            return Created("/api/auth/register", user);
         }
 
         [HttpPost("Login")]

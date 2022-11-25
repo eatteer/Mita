@@ -16,6 +16,7 @@ namespace Mita.Models
         {
         }
 
+        public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Manga> Mangas { get; set; } = null!;
         public virtual DbSet<Review> Reviews { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -31,11 +32,44 @@ namespace Mita.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("comments");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Body)
+                    .HasColumnType("ntext")
+                    .HasColumnName("body");
+
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("title");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Review)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.ReviewId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_review_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_comment_user_id");
+            });
+
             modelBuilder.Entity<Manga>(entity =>
             {
                 entity.ToTable("mangas");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Chapters).HasColumnName("chapters");
 
                 entity.Property(e => e.MalUri)
                     .HasMaxLength(255)
@@ -46,6 +80,21 @@ namespace Mita.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("name");
+
+                entity.Property(e => e.Score)
+                    .HasColumnType("decimal(2, 0)")
+                    .HasColumnName("score");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("status");
+
+                entity.Property(e => e.Synopsis)
+                    .HasColumnType("ntext")
+                    .HasColumnName("synopsis");
+
+                entity.Property(e => e.Volumes).HasColumnName("volumes");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -70,13 +119,13 @@ namespace Mita.Models
                 entity.HasOne(d => d.Manga)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.MangaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_manga_id");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_user_id");
             });
 

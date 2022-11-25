@@ -8,6 +8,7 @@ namespace Mita.Models
     {
         public User()
         {
+            Comments = new HashSet<Comment>();
             Reviews = new HashSet<Review>();
         }
 
@@ -18,6 +19,8 @@ namespace Mita.Models
         [JsonIgnore]
         public string PasswordSalt { get; set; } = null!;
         public string Role { get; set; } = null!;
+        [JsonIgnore]
+        public virtual ICollection<Comment> Comments { get; set; }
         [JsonIgnore]
         public virtual ICollection<Review> Reviews { get; set; }
     }

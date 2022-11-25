@@ -41,7 +41,7 @@ namespace Mita.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> Create(CreateUserDTO createUserDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -71,7 +71,7 @@ namespace Mita.Controllers
             return Ok(user);
         }
 
-        [HttpPatch("{id}"), Authorize(Roles = "Admin")]
+        [HttpPatch("{id}"), Authorize(Roles = "Admin, Reviewer")]
         public async Task<ActionResult<User>> Update([FromRoute] int id, [FromBody] UpdateUserDTO updateUserDTO)
         {
             // Check if user exists
@@ -80,6 +80,10 @@ namespace Mita.Controllers
                 .FirstOrDefaultAsync();
 
             if (user == null) return NotFound();
+
+            // Check if the user owns the account
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (userId != user.Id) return Unauthorized("You don't own this account");
 
             // Update user data
             user.Username = updateUserDTO.Username ?? user.Username;
@@ -101,7 +105,7 @@ namespace Mita.Controllers
             return Ok(user);
         }
 
-        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin, Reviewer")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
             // Check if user exists
@@ -110,6 +114,13 @@ namespace Mita.Controllers
                 .FirstOrDefaultAsync();
 
             if (user == null) return NotFound();
+
+            // Check if the user owns the account
+            if (User.FindFirstValue(ClaimTypes.Role) == "Admin, Reviewer")
+            {
+                int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (userId != user.Id) return Unauthorized("You don't own this account");
+            }
 
             // Remove user from database
             _mitaContext.Users.Remove(user);

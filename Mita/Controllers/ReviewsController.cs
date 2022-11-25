@@ -88,10 +88,6 @@ namespace Mita.Controllers
 
             if (review == null) return NotFound();
 
-            // Check if the user owns the review
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (userId != review.UserId) return Unauthorized("You don't own this review");
-
             // Update review data
             review.Title = updateReviewDTO.Title ?? review.Title;
             review.Body = updateReviewDTO.Body ?? review.Body;
@@ -104,7 +100,7 @@ namespace Mita.Controllers
             return Ok(review);
         }
 
-        [HttpDelete("{id}"), Authorize(Roles = "Reviewer")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin, Reviewer")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
             // Check if review exists
@@ -115,8 +111,11 @@ namespace Mita.Controllers
             if (review == null) return NotFound();
 
             // Check if the user owns the review
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (userId != review.UserId) return Unauthorized("You don't own this review");
+            if (User.FindFirstValue(ClaimTypes.Role) == "Reviewer")
+            {
+                int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                if (userId != review.UserId) return Unauthorized("You don't own this review");
+            }
 
             // Remove review from database
             _mitaContext.Reviews.Remove(review);
