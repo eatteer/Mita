@@ -12,9 +12,9 @@ namespace Mita.Controllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly MitaContext _mitaContext;
+        private readonly MitaDatabaseContext _mitaContext;
 
-        public ReviewsController(MitaContext mitaContext)
+        public ReviewsController(MitaDatabaseContext mitaContext)
         {
             _mitaContext = mitaContext;
         }

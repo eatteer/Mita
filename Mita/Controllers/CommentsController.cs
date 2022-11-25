@@ -13,9 +13,9 @@ namespace Mita.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly MitaContext _mitaContext;
+        private readonly MitaDatabaseContext _mitaContext;
 
-        public CommentsController(MitaContext mitaContext)
+        public CommentsController(MitaDatabaseContext mitaContext)
         {
             _mitaContext = mitaContext;
         }

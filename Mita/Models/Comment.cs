@@ -13,6 +13,7 @@ namespace Mita.Models
         public int? ReviewId { get; set; }
         [JsonIgnore]
         public int? UserId { get; set; }
+
         public virtual Review? Review { get; set; }
         public virtual User? User { get; set; }
     }

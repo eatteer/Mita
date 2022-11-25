@@ -14,9 +14,9 @@ namespace Mita.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly MitaContext _mitaContext;
+        private readonly MitaDatabaseContext _mitaContext;
 
-        public UsersController(MitaContext mitaContext)
+        public UsersController(MitaDatabaseContext mitaContext)
         {
             _mitaContext = mitaContext;
         }

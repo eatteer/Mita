@@ -15,9 +15,9 @@ namespace Mita.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly MitaContext _mitaContext;
+        private readonly MitaDatabaseContext _mitaContext;
 
-        public AuthController(IConfiguration configuration, MitaContext mitaContext)
+        public AuthController(IConfiguration configuration, MitaDatabaseContext mitaContext)
         {
             _configuration = configuration;
             _mitaContext = mitaContext;

@@ -37,9 +37,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<MitaContext>((options) =>
+builder.Services.AddDbContext<MitaDatabaseContext>((options) =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Mita"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MitaDatabase"));
 });
 
 var app = builder.Build();

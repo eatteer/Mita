@@ -13,9 +13,9 @@ namespace Mita.Controllers
     [ApiController]
     public class MangasController : ControllerBase
     {
-        private readonly MitaContext _mitaContext;
+        private readonly MitaDatabaseContext _mitaContext;
 
-        public MangasController(MitaContext mitaContext)
+        public MangasController(MitaDatabaseContext mitaContext)
         {
             _mitaContext = mitaContext;
         }
